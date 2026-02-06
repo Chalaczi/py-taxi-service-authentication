@@ -14,9 +14,9 @@ def index(request):
     num_cars = Car.objects.count()
     num_manufacturers = Manufacturer.objects.count()
 
-    # 1. Implementacja licznika odwiedzin
     num_visits = request.session.get("num_visits", 0)
-    request.session["num_visits"] = num_visits + 1
+    num_visits += 1
+    request.session["num_visits"] = num_visits
 
     context = {
         "num_drivers": num_drivers,
@@ -28,7 +28,6 @@ def index(request):
     return render(request, "taxi/index.html", context=context)
 
 
-# Dodajemy LoginRequiredMixin jako pierwszy argument każdej klasy
 class ManufacturerListView(LoginRequiredMixin, generic.ListView):
     model = Manufacturer
     context_object_name = "manufacturer_list"
@@ -54,3 +53,4 @@ class DriverListView(LoginRequiredMixin, generic.ListView):
 class DriverDetailView(LoginRequiredMixin, generic.DetailView):
     model = Driver
     queryset = Driver.objects.prefetch_related("cars__manufacturer")
+    
